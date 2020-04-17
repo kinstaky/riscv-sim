@@ -145,7 +145,48 @@ void simulate()
         	char ch;
         	while ((ch = getchar()) != '\n') {
         		if (ch == 'r') printREG();
-       			else fprintf(stderr, "input \'r\' or Enter\n");
+       			else if (ch == 'x') {
+					int num, address;
+					char format;
+					scanf(" %d %c %x", &num, &format, &address);
+					switch (format) {
+						case 'b':
+							for (int i = 0; i != num; ++i) {
+								char val;
+								readMem(address+i, (void*)&val, 1);
+								fprintf(stderr, "%02hhx\t", val);
+								if (i % 8 == 7) fprintf(stderr, "\n");
+							}
+							break;
+						case 'h':
+							for (int i = 0; i != num; ++i) {
+								short val;
+								readMem(address+i*2, (void*)&val, 2);
+								fprintf(stderr, "%04hx\t", val);
+								if (i % 4 == 3) fprintf(stderr, "\n");
+							}
+							break;
+						case 'w':
+							for (int i = 0; i != num; ++i) {
+								int val;
+								readMem(address+i*4, (void*)&val, 4);
+								fprintf(stderr, "%08x\t", val);
+								if (i % 2 == 1) fprintf(stderr, "\n");
+							}
+							break;
+						case 'd':
+							for (int i = 0; i != num; ++i) {
+								long long val;
+								readMem(address+i*8, (void*)&val, 8);
+								fprintf(stderr, "%016lx\n", val);
+							}
+							break;
+						default:
+							fprintf(stderr, "input \'r\' or \'x\' <number><format(b, h, w, d)> <address> or Enter\n");
+					}
+					fprintf(stderr, "\n>");
+				}
+				else fprintf(stderr, "input \'r\' or \'x\' <number><format(b, h, w, d)> <address> or Enter\n");
        			while ((ch = getchar()) != '\n');
         	}
         }
@@ -155,6 +196,8 @@ void simulate()
 	if (singleStep) {
 		fprintf(stderr, ">>Simulation over.\n");
 	}
+
+	PrintStatic();
 }
 
 
@@ -607,6 +650,7 @@ void IF() {
     			fprintf(stderr, "rs1 hazard with previous instruction\n");
     		}
     		WB_IF_old.bubble = 1;
+    		++staRegHazard;
     		return;
     	}
     	else if (rs1 == ID_EX.rd && ID_EX.writeREG && !ID_EX.bubble) {
@@ -614,6 +658,7 @@ void IF() {
     			fprintf(stderr, "rs1 hazard with previous 2 instruction\n");
     		}
     		WB_IF_old.bubble = 1;
+    		++staRegHazard;
     		return;
     	}
     	else if (rs1 == EX_MEM.rd && EX_MEM.writeREG && !EX_MEM.bubble) {
@@ -622,6 +667,7 @@ void IF() {
     				fprintf(stderr, "rs1 hazard with previous 3 instruction\n");
     			}
     			WB_IF_old.bubble = 1;
+    			++staRegHazard;
     			return;
     		}
     		if (rs1 == 0) val1 = 0;
@@ -636,6 +682,7 @@ void IF() {
     			fprintf(stderr, "rs2 hazard with previous instruction\n");
     		}
     		WB_IF_old.bubble = 1;
+    		++staRegHazard;
     		return;
     	}
     	else if (rs2 == ID_EX.rd && ID_EX.writeREG && !ID_EX.bubble) {
@@ -643,6 +690,7 @@ void IF() {
     			fprintf(stderr, "rs2 hazard with previous 2 instruction\n");
     		}
     		WB_IF_old.bubble = 1;
+    		++staRegHazard;
     		return;
     	}
     	else if (rs2 == EX_MEM.rd && EX_MEM.writeREG && !EX_MEM.bubble) {
@@ -651,6 +699,7 @@ void IF() {
     				fprintf(stderr, "rs2 hazard with previous 3 instruction\n");
     			}
     			WB_IF_old.bubble = 1;
+    			++staRegHazard;
     			return;
     		}
     		if (writeSize) {
@@ -726,7 +775,6 @@ void ID() {
 	if (readREG1) {
 		if (rs1 == 0) val1 = 0;
 		else val1 = reg[rs1];
-//printf("reg[%d](rs1) = %lx\n", rs1, reg[rs1]);
 	}
 	if (readREG2) {
 		if (writeSize) {
@@ -737,9 +785,7 @@ void ID() {
 			if (rs2 == 0) val2 = 0;
 			else val2 = reg[rs2];
 		}
-//printf("reg[%d](rs2) = %lx\n", rs2, reg[rs2]);
 	}
-//printf("\tID: pc 0x%x, readREG1 = %d, readREG2 = %d\n", pc, readREG1, readREG2);
 
 
 	//write ID_EX_old
@@ -768,6 +814,7 @@ void EX() {
 			fprintf(stderr, "\t\t\t\t\t\tEX bubble %d\n", bubble);
 		}
 		EX_MEM_old.bubble = bubble;
+		++staCycle;
 		return;
 	}
 	//read ID_EX
@@ -801,9 +848,11 @@ void EX() {
 			break;
 		case OPMUL:
 			res = val1 * val2;
+			staCycle += CYCLE_MUL - CYCLE_NORMAL;
 			break;
 		case OPMULH:
 			res = mulh(val1, val2);
+			staCycle += CYCLE_MULH - CYCLE_NORMAL;
 			break;
 		case OPDIV:
 			if (val2 == 0) {
@@ -813,6 +862,7 @@ void EX() {
 				return;
 			}
 			else res = val1 / val2;
+			staCycle += CYCLE_DIV - CYCLE_NORMAL;
 			break;
 		case OPREM:
 			if (val2 == 0) {
@@ -822,6 +872,7 @@ void EX() {
 				return;
 			}
 			else res = val1 % val2;
+			staCycle += CYCLE_DIV - CYCLE_NORMAL;
 			break;
 		case OPSL:
 			res = val1 << val2;
@@ -844,7 +895,6 @@ void EX() {
 		case OPJMP:
 			res = npc;
 			WB_IF_old.pc = (val1 + val2) & -2;
-// printf("val1 = %lx, val2 = %lx, npc = %x\n", val1, val2, npc);
 			break;
 		case OPMOV:
 			res = val1;
@@ -853,6 +903,7 @@ void EX() {
 			fprintf(stderr, "Undefined opType\n");
 			ASSERT(false);
 	}
+	++staCycle;
 
 	// Branch PC calulate
 	switch (branch) {
@@ -881,6 +932,7 @@ void EX() {
 
 	// branch hazard
 	if (errorPredict) {
+		staCtrlHazard += 2;
 		IF_ID_old.bubble = 1;
 		ID_EX_old.bubble = 1;
 		WB_IF_old.pc = branchCorrectPC();
@@ -936,6 +988,7 @@ void MEM() {
 		ID_EX_old.bubble = 1;
 		IF_ID_old.bubble = 1;
 		WB_IF_old.pc = ID_EX_old.pc;
+		staMemHazard += 3;
 	}
 	else if (writeSize && !ID_EX_old.bubble && memConflict(ID_EX_old.pc, 4, res, writeSize)) {		// conflict between MEM and ID
 		if (singleStep) {
@@ -944,6 +997,7 @@ void MEM() {
 		ID_EX_old.bubble = 1;
 		IF_ID_old.bubble = 1;
 		WB_IF_old.pc = IF_ID_old.pc;
+		staMemHazard += 2;
 	}
 	else if (writeSize && !IF_ID_old.bubble && memConflict(IF_ID_old.pc, 4, res, writeSize)) {
 		if (singleStep) {
@@ -951,6 +1005,7 @@ void MEM() {
 		}
 		IF_ID_old.bubble = 1;
 		WB_IF_old.pc = WB_IF_old.pc;
+		staMemHazard += 1;
 	}
 
 
@@ -958,7 +1013,6 @@ void MEM() {
 	if (readSize) {
 		int addr = res;
 		int excep = readMem(addr, (void*)&res, readSize);
-//printf("\t\tpc 0x%x, read at 0x%x, value 0x%x\n", pc, addr, res);
 		if (excep) raiseException(PAGE_FAULT, addr, pc);
 		readSize = 0;
 	}
@@ -970,7 +1024,6 @@ void MEM() {
 
 	if (writeSize) {
 		int excep = writeMem(res, (void*)&writeVal, writeSize);
-//printf("\t\tpc 0x%x, write at 0x%x, value 0x%x\n", pc, res, writeVal);
 		if (excep) raiseException(PAGE_FAULT, res, pc);
 		writeSize = 0;
 	}
@@ -1012,11 +1065,10 @@ void WB() {
 		reg[rd] = res;
 //printf("\t\tpc 0x%x, write at x%d, value %x\n", pc, rd, res);
 	}
+
+	++staInstr;
 }
 
-unsigned int getbit(unsigned instr, int s,int e) {
-	return ((instr >> s) & ((1 << e) - 1));
-}
 
 REG signExt(unsigned int src, int bit) {
 	REG sign = (src >> (bit-1)) & 0x1;
@@ -1046,6 +1098,7 @@ void printREG() {
 		}
 		fprintf(stderr, "x%d %lx\n", i*8+7, reg[i*8+7]);
 	}
+	fprintf(stderr, "\n>");
 }
 
 
@@ -1265,4 +1318,14 @@ void syscallHandler() {
 			fprintf(stderr, "undefined syscall type %d\n", type);
 			ASSERT(false);
 	}
+}
+
+
+//-----------------------------------------------------------------------------------------------------------
+// static part
+//-----------------------------------------------------------------------------------------------------------
+void PrintStatic() {
+	fprintf(stderr, "\n");
+	fprintf(stderr, "Cycles %d, instructions %d, CPI %lf\n", staCycle, staInstr, (double)staCycle / (double)staInstr);
+	fprintf(stderr, "Memory hazard %d, register hazard %d, branch hazard %d\n", staMemHazard, staRegHazard, staCtrlHazard);
 }

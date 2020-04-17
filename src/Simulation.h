@@ -216,18 +216,24 @@ void MEM();
 void WB();
 
 
+//符号扩展
+REG signExt(unsigned int src,int bit);
+
+void printREG();
+
+//-----------------------------------------------------------------------------------------------------------
+// memory part
+//-----------------------------------------------------------------------------------------------------------
 
 int readMem(int addr, void *val, int size);
 int writeMem(int addr, void *val, int size);
 int translate(int addr, int *phyAddr, int size, int writing);
 bool memConflict(int readAddr, int readSize, int writeAddr, int writeSize);
 
-//符号扩展
-REG signExt(unsigned int src,int bit);
 
-//获取指定位
-unsigned int getbit(unsigned inst,int s,int e);
-
+//-----------------------------------------------------------------------------------------------------------
+// branch part
+//-----------------------------------------------------------------------------------------------------------
 
 // for branch prediction
 #define POL_ANT		0			// always not taken
@@ -250,6 +256,11 @@ struct exception {
 	int pc;
 };
 
+
+//-----------------------------------------------------------------------------------------------------------
+// exception part
+//-----------------------------------------------------------------------------------------------------------
+
 void exceptionHandler();
 
 void raiseException(int type, int status, int pc);
@@ -260,6 +271,21 @@ struct exception excepTable[5];
 
 void syscallHandler();
 
-void printREG();
+//-----------------------------------------------------------------------------------------------------------
+// static part
+//-----------------------------------------------------------------------------------------------------------
+#define CYCLE_NORMAL 	1
+#define CYCLE_MUL	 	10
+#define CYCLE_MULH		20
+#define CYCLE_DIV		40
+
+int staCycle = 0;
+int staInstr = 0;
+int staMemHazard = 0;
+int staRegHazard = 0;
+int staCtrlHazard = 0;
+
+void PrintStatic();
+
 
 #endif
