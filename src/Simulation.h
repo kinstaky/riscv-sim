@@ -178,13 +178,6 @@ const char *INSTNAME[]{
 #define B_BGE		4
 #define B_ALL		5
 
-// excetptions
-#define NO_EXCEPTION 	0
-#define UNDEF_INST		1
-#define DIVIDE_ZERO		2
-#define PAGE_FAULT		3
-#define SYSCALL			4
-
 
 #define MAXADDR 100000000
 
@@ -260,6 +253,13 @@ struct exception {
 //-----------------------------------------------------------------------------------------------------------
 // exception part
 //-----------------------------------------------------------------------------------------------------------
+// excetptions
+#define NO_EXCEPTION 	0
+#define UNDEF_INST		1
+#define DIVIDE_ZERO		2
+#define PAGE_FAULT		3
+#define SYSCALL			4
+
 
 void exceptionHandler();
 
