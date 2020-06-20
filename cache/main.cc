@@ -91,8 +91,9 @@ int main() {
     lc.size = 1<<15;
     lc.associativity = 8;
     lc.setNum = 32;
-    lc.writeThrough = 1;
-    lc.writeAllocate = 1;
+    lc.writeThrough = 0;
+    lc.writeAllocate = 0;
+    lc.streamBuffer = false;
 
     int read[33000];
     uint addr[33000];
@@ -133,7 +134,6 @@ int main() {
 
     cout << "---------------------------------------------------" << endl;
     cout << "MissRate-Associativity(32 sets and 1024 block size):" << endl;
-    lc.size = 1 << 10;
     for (int i = 0; i != 11; ++i) {
         lc.associativity = 1 << i;
         lc.size = 1<<(15+i);
@@ -147,7 +147,7 @@ int main() {
         cout << "Associativity " << (1<<i) <<endl;
         cout << "   Total access_time " << gs.access_time << " ns, access " << gs.access_counter << ", miss " << gs.miss_num;
         cout  << ", replace " << gs.replace_num << ", fetch " << gs.fetch_num << ", prefetch " << gs.prefetch_num << endl;
-        cout << "Miss Rate " << (double)gs.miss_num / (double)gs.access_counter << endl;
+        cout << "   Miss Rate " << (double)gs.miss_num / (double)gs.access_counter << endl;
         if (outputRate) {
             fout << (double)gs.miss_num / (double)gs.access_counter << " ";
         } else {
@@ -155,6 +155,70 @@ int main() {
         }
     }
     fout << endl;
+
+    cout << "---------------------------------------------------" << endl;
+    cout << "Different write policy(8 associativity, 32 sets and 1024 block size):" << endl;
+    lc.associativity = 8;
+    lc.size = 1 << 18;
+    lc.setNum = 32;
+
+    lc.writeThrough = 0;
+    lc.writeAllocate = 0;
+    l1.SetConfig(lc);
+    l1.SetStats(s);
+    for (int j = 0; j != cnt; ++j) {
+        l1.HandleRequest(addr[j], 0, read[j], nullptr, hit, time);
+    }
+    l1.GetStats(gs);
+    cout << "Write back and non write allocate:" << endl;
+    cout << "   Total access_time " << gs.access_time << " ns, access " << gs.access_counter << ", miss " << gs.miss_num;
+    cout << ", replace " << gs.replace_num << ", fetch " << gs.fetch_num << ", prefetch " << gs.prefetch_num << endl;
+    cout << "   Miss Rate " << (double)gs.miss_num / (double)gs.access_counter << endl;
+    fout << (double)gs.access_time / (double)cnt << " ";
+
+    lc.writeThrough = 0;
+    lc.writeAllocate = 1;
+    l1.SetConfig(lc);
+    l1.SetStats(s);
+    for (int j = 0; j != cnt; ++j) {
+        l1.HandleRequest(addr[j], 0, read[j], nullptr, hit, time);
+    }
+    l1.GetStats(gs);
+    cout << "Write back and write allocate:" << endl;
+    cout << "   Total access_time " << gs.access_time << " ns, access " << gs.access_counter << ", miss " << gs.miss_num;
+    cout << ", replace " << gs.replace_num << ", fetch " << gs.fetch_num << ", prefetch " << gs.prefetch_num << endl;
+    cout << "   Miss Rate " << (double)gs.miss_num / (double)gs.access_counter << endl;
+    fout << (double)gs.access_time / (double)cnt << " ";
+
+    lc.writeThrough = 1;
+    lc.writeAllocate = 0;
+    l1.SetConfig(lc);
+    l1.SetStats(s);
+    for (int j = 0; j != cnt; ++j) {
+        l1.HandleRequest(addr[j], 0, read[j], nullptr, hit, time);
+    }
+    l1.GetStats(gs);
+    cout << "Write through and non write allocate:" << endl;
+    cout << "   Total access_time " << gs.access_time << " ns, access " << gs.access_counter << ", miss " << gs.miss_num;
+    cout << ", replace " << gs.replace_num << ", fetch " << gs.fetch_num << ", prefetch " << gs.prefetch_num << endl;
+    cout << "   Miss Rate " << (double)gs.miss_num / (double)gs.access_counter << endl;
+    fout << (double)gs.access_time / (double)cnt << " ";
+
+    lc.writeThrough = 1;
+    lc.writeAllocate = 1;
+    l1.SetConfig(lc);
+    l1.SetStats(s);
+    for (int j = 0; j != cnt; ++j) {
+        l1.HandleRequest(addr[j], 0, read[j], nullptr, hit, time);
+    }
+    l1.GetStats(gs);
+    cout << "Write through and write allocate:" << endl;
+    cout << "   Total access_time " << gs.access_time << " ns, access " << gs.access_counter << ", miss " << gs.miss_num;
+    cout << ", replace " << gs.replace_num << ", fetch " << gs.fetch_num << ", prefetch " << gs.prefetch_num << endl;
+    cout << "   Miss Rate " << (double)gs.miss_num / (double)gs.access_counter << endl;
+    fout << (double)gs.access_time / (double)cnt << " ";
+    fout << endl;
+
     fout.close();
 #endif
 
