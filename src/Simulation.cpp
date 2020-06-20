@@ -12,6 +12,59 @@ int endPC;
 //加载代码段
 //初始化PC
 int main(int argc, char **argv) {
+#ifdef LAB3
+	// init meomry and cache
+    l1.SetLower(&l2);
+    l2.SetLower(&llc);
+    llc.SetLower(&memory);
+
+    StorageStats s;
+    s.access_time = 0;
+    s.access_counter = 0;
+    s.miss_num = 0;
+    s.replace_num = 0;
+    s.fetch_num = 0;
+    s.prefetch_num = 0;
+    l1.SetStats(s);
+    l2.SetStats(s);
+    llc.SetStats(s);
+    memory.SetStats(s);
+
+    StorageLatency sl;
+    sl.bus_latency = 0;			// ignore it, 0 cycles
+    sl.hit_latency = 200;
+    memory.SetLatency(sl);
+
+    sl.bus_latency = 0;
+    sl.hit_latency = 20;
+    llc.SetLatency(sl);
+
+    sl.bus_latency = 0;
+    sl.hit_latency = 8;
+    l2.SetLatency(sl);
+
+    sl.bus_latency = 0;
+    sl.hit_latency = 1;
+    l1.SetLatency(sl);
+
+    CacheConfig lc;
+    lc.fake = false;
+    lc.size = 1<<15;
+    lc.associativity = 8;
+    lc.setNum = 1<<6;
+    lc.writeThrough = 0;
+    lc.writeAllocate = 0;
+    l1.SetConfig(lc);
+
+    lc.size = 1<<18;
+    lc.setNum = 1<<9;
+    l2.SetConfig(lc);
+
+    lc.size = 1<<23;
+    lc.setNum = 1<<14;
+    llc.SetConfig(lc);
+#endif
+
 	parse(argc, argv);
 
 	//解析elf文件
@@ -1105,7 +1158,7 @@ void printREG() {
 //-----------------------------------------------------------------------------------------------------------
 // memory part
 //-----------------------------------------------------------------------------------------------------------
-
+#ifndef LAB3
 // read from memory
 int readMem(int addr, void *val, int size) {
 	int phyAddr;
@@ -1156,6 +1209,27 @@ int writeMem(int addr, void *val, int size) {
 	}
 	return NO_EXCEPTION;
 }
+#else
+int readMem(int addr, void *val, int size) {
+	int phyAddr, time, hit;
+	int excep = translate(addr, &phyAddr, size, 0);
+	if (excep) return excep;
+	l1.HandleRequest(phyAddr, size, 1, (char*)val, hit, time);
+	staCycle += time - 1;
+	return NO_EXCEPTION;
+}
+
+int writeMem(int addr, void *val, int size) {
+	int phyAddr, time, hit;
+	int excep = translate(addr, &phyAddr, size, 0);
+	if (excep) return excep;
+	l1.HandleRequest(phyAddr, size, 0, (char*)val, hit, time);
+	staCycle += time - 1;
+	return NO_EXCEPTION;
+}
+
+
+#endif
 
 
 int translate(int virAddr, int *phyAddr, int size, int writing) {
@@ -1188,7 +1262,11 @@ void loadMemory(ELFIO::elfio *reader) {
 
 		for (uint32_t p = addr; p < addr + memsz; ++p) {
 			if (p < addr + filesz)
+#ifndef LAB3
 				memory[p] = pseg->get_data()[p-addr];
+#else
+				memory.Load(p, pseg->get_data()[p-addr]);
+#endif
 		}
 	}
 }
@@ -1200,6 +1278,7 @@ bool memConflict(int readAddr, int readSize, int writeAddr, int writeSize) {
 	if (writeAddr >= readEnd) return false;
 	return true;
 }
+
 
 
 
@@ -1328,4 +1407,18 @@ void PrintStatic() {
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Cycles %d, instructions %d, CPI %lf\n", staCycle, staInstr, (double)staCycle / (double)staInstr);
 	fprintf(stderr, "Memory hazard %d, register hazard %d, branch hazard %d\n", staMemHazard, staRegHazard, staCtrlHazard);
+#ifdef LAB3
+	// cache
+	fprintf(stderr, "Cache Part\n");
+	StorageStats ss;
+	l1.GetStats(ss);
+	fprintf(stderr, "	L1 Cache: Access %d, Miss %d, Replace %d", ss.access_counter, ss.miss_num, ss.replace_num);
+	fprintf(stderr, ", Fetch %d, Miss Rate %f\n", ss.fetch_num, (double)ss.miss_num/(double)ss.access_counter);
+	l2.GetStats(ss);
+	fprintf(stderr, "	L2 Cache: Access %d, Miss %d, Replace %d", ss.access_counter, ss.miss_num, ss.replace_num);
+	fprintf(stderr, ", Fetch %d, Miss Rate %f\n", ss.fetch_num, (double)ss.miss_num/(double)ss.access_counter);
+	llc.GetStats(ss);
+	fprintf(stderr, "	LLC Cache: Access %d, Miss %d, Replace %d", ss.access_counter, ss.miss_num, ss.replace_num);
+	fprintf(stderr, ", Fetch %d, Miss Rate %f\n", ss.fetch_num, (double)ss.miss_num/(double)ss.access_counter);
+#endif
 }

@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include "Reg_def.h"
 #include "Debug.h"
+#include "../cache/cache.h"
+#include "../cache/memory.h"
 
 #include "elfio/elfio.hpp"
 // opcode type
@@ -182,7 +184,14 @@ const char *INSTNAME[]{
 #define MAXADDR 100000000
 
 //主存
+#ifndef LAB3
 char memory[MAXADDR]={0};
+#else
+Memory memory(MAXADDR);
+Cache l1;
+Cache l2;
+Cache llc;
+#endif
 //寄存器堆
 REG reg[32]={0};
 

@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"staC",
+				"staCtrlHazard"
+			],
+			[
+				"CYCL",
+				"CYCLE_NORMAL"
+			],
+			[
+				"CYC",
+				"CYCLE_DIV"
+			],
+			[
 				"fuc",
 				"fuc7"
 			],
@@ -502,18 +514,6 @@
 			[
 				"Enum",
 				"Enum_Loc"
-			],
-			[
-				"clock",
-				"clock_t"
-			],
-			[
-				"succe",
-				"successThreads"
-			],
-			[
-				"Thre",
-				"ThreadStatus"
 			]
 		]
 	},
@@ -523,8 +523,7 @@
 			"file": "/home/pu/Documents/tmp/test.c",
 			"settings":
 			{
-				"buffer_size": 671,
-				"encoding": "UTF-8",
+				"buffer_size": 297,
 				"line_ending": "Unix"
 			}
 		},
@@ -541,7 +540,7 @@
 			"file": "src/Simulation.h",
 			"settings":
 			{
-				"buffer_size": 4532,
+				"buffer_size": 5640,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -550,42 +549,76 @@
 			"file": "src/Simulation.cpp",
 			"settings":
 			{
-				"buffer_size": 29391,
+				"buffer_size": 31145,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "test/qsort.c",
+			"file": "cache/Makefile",
 			"settings":
 			{
-				"buffer_size": 680,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "test/nn.c",
-			"settings":
-			{
-				"buffer_size": 189,
-				"encoding": "UTF-8",
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "test/lib.h",
-			"settings":
-			{
-				"buffer_size": 133,
+				"buffer_size": 163,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "test/lib.c",
+			"file": "cache/def.h",
 			"settings":
 			{
-				"buffer_size": 271,
+				"buffer_size": 97,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "#include \"stdio.h\"\n#include \"cache.h\"\n#include \"memory.h\"\n\n#define Q1      // question 1\n\n#ifdef Q1\nint main(void) {\n  Memory m;\n  Cache l1;\n  l1.SetLower(&m);\n\n  StorageStats s;\n  s.access_time = 0;\n  m.SetStats(s);\n  l1.SetStats(s);\n\n  StorageLatency ml;\n  ml.bus_latency = 6;\n  ml.hit_latency = 100;\n  m.SetLatency(ml);\n\n  StorageLatency ll;\n  ll.bus_latency = 3;\n  ll.hit_latency = 10;\n  l1.SetLatency(ll);\n\n  \n\n  int hit, time;\n  char content[64];\n  l1.HandleRequest(0, 0, 1, content, hit, time);\n  printf(\"Request access time: %dns\\n\", time);\n  l1.HandleRequest(1024, 0, 1, content, hit, time);\n  printf(\"Request access time: %dns\\n\", time);\n\n  l1.GetStats(s);\n  printf(\"Total L1 access time: %dns\\n\", s.access_time);\n  m.GetStats(s);\n  printf(\"Total Memory access time: %dns\\n\", s.access_time);\n  return 0;\n}\n\n#endif\n",
+			"file": "cache/main.cc",
+			"file_size": 820,
+			"file_write_time": 132335155052258612,
+			"settings":
+			{
+				"buffer_size": 824,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cache/cache.h",
+			"settings":
+			{
+				"buffer_size": 978,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cache/cache.cc",
+			"settings":
+			{
+				"buffer_size": 1151,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cache/memory.h",
+			"settings":
+			{
+				"buffer_size": 401,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cache/memory.cc",
+			"settings":
+			{
+				"buffer_size": 246,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cache/storage.h",
+			"settings":
+			{
+				"buffer_size": 1366,
 				"line_ending": "Unix"
 			}
 		}
@@ -679,17 +712,39 @@
 	],
 	"file_history":
 	[
+		"/home/pu/Documents/riscv/sim/cache/trace/1.trace",
+		"/home/pu/Documents/riscv/sim/cache/trace/2.trace",
+		"/home/pu/Documents/riscv/sim/cache/1.trace",
+		"/mnt/hgfs/Share/lab3/01-mcf-gem5-xcg.trace",
+		"/home/pu/Documents/riscv/sim/src/Makefile",
+		"/home/pu/Documents/riscv/sim/cache/README",
+		"/mnt/hgfs/Share/lab3/cache/cache.cc",
+		"/mnt/hgfs/Share/lab3/cache/cache.h",
+		"/home/pu/Documents/nachos/nachos-3.4/code/machine/translate.cc",
+		"/mnt/hgfs/Share/lab3/cache/storage.h",
+		"/mnt/hgfs/Share/lab3/cache/README",
+		"/mnt/hgfs/Share/lab3/cache/memory.h",
+		"/mnt/hgfs/Share/lab3/cache/memory.cc",
+		"/mnt/hgfs/Share/lab3/cache/Makefile",
+		"/mnt/hgfs/Share/lab3/cache/main.cc",
+		"/mnt/hgfs/Share/lab3/cache/def.h",
+		"/home/pu/Documents/riscv/sim/src/Exception.cpp",
+		"/home/pu/Documents/LanguageCompare/qsort.cpp",
+		"/home/pu/Documents/riscv/sim/test/Ackermann.c",
+		"/home/pu/Documents/riscv/sim/test/matrix.c",
+		"/home/pu/Documents/riscv/sim/test/lib.c",
+		"/home/pu/Documents/riscv/sim/test/lib.h",
+		"/home/pu/Documents/riscv/sim/Makefile",
+		"/home/pu/Documents/riscv/sim/test/Makefile",
+		"/home/pu/Documents/LanguageCompare/matrixMul.cpp",
+		"/home/pu/Documents/LanguageCompare/Ackermann.cpp",
+		"/home/pu/Documents/riscv/sim/test/qsort.c",
+		"/home/pu/Documents/riscv/sim/test/nn.c",
 		"/home/pu/Documents/riscv/sim/test/mul-div.c",
 		"/home/pu/Documents/riscv/sim/test/add.c",
-		"/home/pu/Documents/riscv/sim/test/lib.c",
 		"/home/pu/Documents/riscv/sim/test/hello.c",
-		"/home/pu/Documents/riscv/sim/src/Makefile",
-		"/home/pu/Documents/riscv/sim/test/Makefile",
-		"/home/pu/Documents/riscv/sim/test/nn.c",
-		"/home/pu/Documents/riscv/sim/Makefile",
 		"/home/pu/Documents/riscv/sim/test/hello.S",
 		"/home/pu/Documents/riscv/sim/include/elfio/elfio_symbols.hpp",
-		"/home/pu/Documents/riscv/sim/src/Exception.cpp",
 		"/home/pu/Documents/riscv/sim/src/branch.cpp",
 		"/home/pu/Documents/riscv/sim/src/Memory.cpp",
 		"/home/pu/Documents/riscv/sim/src/Debug.h",
@@ -698,7 +753,6 @@
 		"/home/pu/Documents/csapp-lab/archlab/Makefile",
 		"/home/pu/Documents/nachos/nachos-3.4/code/threads/Makefile",
 		"/home/pu/Documents/nachos/nachos-3.4/code/Makefile",
-		"/home/pu/Documents/riscv/sim/test/lib.h",
 		"/home/pu/Documents/riscv/sim/include/elfio/elfio.hpp",
 		"/home/pu/Documents/riscv/sim/test/add.S",
 		"/home/pu/Documents/nachos/nachos-3.4/code/threads/utility.h",
@@ -736,7 +790,6 @@
 		"/home/pu/Documents/nachos/nachos-3.4/code/threads/system.cc",
 		"/home/pu/Documents/nachos/nachos-3.4/code/userprog/exception.cc",
 		"/home/pu/Documents/nachos/nachos-3.4/code/userprog/progtest.cc",
-		"/home/pu/Documents/nachos/nachos-3.4/code/machine/translate.cc",
 		"/home/pu/Documents/nachos/nachos-3.4/code/threads/main.cc",
 		"/home/pu/Documents/nachos/nachos-3.4/code/userprog/addrspace.h",
 		"/home/pu/Documents/nachos/nachos-3.4/code/machine/machine.cc",
@@ -786,27 +839,7 @@
 		"/home/pu/Documents/riscv-sim-template/Simulation.h",
 		"/home/pu/Documents/riscv-sim-template/Reg_def.h",
 		"/home/pu/Documents/riscv-sim-template/Read_Elf.h",
-		"/home/pu/Documents/riscv-sim-template/Simulation.cpp",
-		"/home/pu/Documents/nachos/nachos-3.4/code/threads/synchlist.cc",
-		"/home/pu/Documents/nachos/nachos-3.4/code/threads/synch.cc",
-		"/home/pu/Documents/nachos/nachos-3.4/code/threads/synch.h",
-		"/home/pu/Documents/riscv-qemu-riscv-all/Makefile",
-		"/home/pu/Documents/riscv-qemu-riscv-all/VERSION",
-		"/home/pu/.sbt/repositories",
-		"/home/pu/Documents/MIPS/hello.c",
-		"/home/pu/Documents/MIPS/hello.asm",
-		"/home/pu/Documents/MIPS/a.out",
-		"/home/pu/Documents/MIPS",
-		"/home/pu/Documents/nachos/nachos-3.4/code/machine/timer.h",
-		"/home/pu/Documents/nachos/nachos-3.4/code/machine/interrupt.h",
-		"/home/pu/Documents/nachos/nachos-3.4/code/threads/switch.h",
-		"/home/pu/Documents/nachos/nachos-3.4/code/threads/swtch.s",
-		"/home/pu/Documents/nachos/nachos-3.4/code/threads/switch.s",
-		"/home/pu/Documents/nachos/nachos-3.4/code/.gitignore",
-		"/home/pu/Downloads/go.sh",
-		"/etc/v2ray/config.json",
-		"/home/pu/Downloads/buildroot/Makefile",
-		"/home/pu/Downloads/whetstone/Makefile"
+		"/home/pu/Documents/riscv-sim-template/Simulation.cpp"
 	],
 	"find":
 	{
@@ -824,6 +857,7 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"staCtrlHa",
 			"ADDIW",
 			"npc = %d",
 			"readSize",
@@ -950,8 +984,7 @@
 			"status",
 			"scheduler",
 			"THREADS",
-			"DEFINES",
-			"status"
+			"DEFINES"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -975,7 +1008,7 @@
 	"groups":
 	[
 		{
-			"selected": 4,
+			"selected": 8,
 			"sheets":
 			[
 				{
@@ -984,21 +1017,31 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 671,
+						"buffer_size": 297,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								576,
-								576
+								297,
+								297
 							]
 						],
 						"settings":
 						{
+							"WordCount":
+							{
+								"changes": 1,
+								"count": 24,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
 							"encoding_helper_encoding": "UTF-8",
 							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
 							"side_bar_folders_auto_load_folder": 1,
 							"syntax": "Packages/C++/C.sublime-syntax",
 							"translate_tabs_to_spaces": false
@@ -1007,7 +1050,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
@@ -1023,21 +1066,12 @@
 						"selection":
 						[
 							[
-								220,
-								220
+								262,
+								262
 							]
 						],
 						"settings":
 						{
-							"WordCount":
-							{
-								"changes": 0,
-								"count": 109,
-								"modified": false,
-								"selection": false,
-								"status": -1,
-								"syntax": "plain text"
-							},
 							"encoding_helper_encoding": "UTF-8",
 							"encoding_thread_running": true,
 							"origin_encoding": "ASCII",
@@ -1046,10 +1080,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 276.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
@@ -1058,28 +1092,19 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4532,
+						"buffer_size": 5640,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1049,
-								1049
+								5018,
+								5018
 							]
 						],
 						"settings":
 						{
-							"WordCount":
-							{
-								"changes": 408,
-								"count": 483,
-								"modified": false,
-								"selection": false,
-								"status": -1,
-								"syntax": "plain text"
-							},
 							"encoding_helper_encoding": "UTF-8",
 							"encoding_thread_running": true,
 							"origin_encoding": "UTF-8",
@@ -1087,10 +1112,10 @@
 							"syntax": "Packages/C++/C++.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 1104.0,
+						"translation.y": 5375.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
@@ -1099,23 +1124,23 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 29391,
+						"buffer_size": 31145,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								25653,
-								25653
+								1340,
+								1340
 							]
 						],
 						"settings":
 						{
 							"WordCount":
 							{
-								"changes": 3666,
-								"count": 2261,
+								"changes": 0,
+								"count": 2362,
 								"modified": false,
 								"selection": false,
 								"status": -1,
@@ -1129,102 +1154,19 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 11880.0,
+						"translation.y": 23981.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 4,
-					"file": "test/qsort.c",
+					"file": "cache/Makefile",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 680,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								522,
-								522
-							]
-						],
-						"settings":
-						{
-							"WordCount":
-							{
-								"changes": 179,
-								"count": 29,
-								"modified": false,
-								"selection": false,
-								"status": -1,
-								"syntax": "plain text"
-							},
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"origin_encoding": "ASCII",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/C++/C.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "test/nn.c",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 189,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								159,
-								159
-							]
-						],
-						"settings":
-						{
-							"WordCount":
-							{
-								"changes": 24,
-								"count": 13,
-								"modified": false,
-								"selection": false,
-								"status": -1,
-								"syntax": "plain text"
-							},
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_thread_running": true,
-							"origin_encoding": "ASCII",
-							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/C++/C.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "test/lib.h",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 133,
+						"buffer_size": 163,
 						"regions":
 						{
 						},
@@ -1240,7 +1182,48 @@
 							"WordCount":
 							{
 								"changes": 0,
-								"count": 11,
+								"count": 10,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/Makefile/Makefile.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "cache/def.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 97,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 9,
 								"modified": false,
 								"selection": false,
 								"status": -1,
@@ -1256,32 +1239,32 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "test/lib.c",
+					"buffer": 6,
+					"file": "cache/main.cc",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 271,
+						"buffer_size": 824,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								153,
-								153
+								414,
+								414
 							]
 						],
 						"settings":
 						{
 							"WordCount":
 							{
-								"changes": 0,
-								"count": 22,
+								"changes": 53,
+								"count": 53,
 								"modified": false,
 								"selection": false,
 								"status": -1,
@@ -1291,13 +1274,226 @@
 							"encoding_thread_running": true,
 							"origin_encoding": "ASCII",
 							"side_bar_folders_auto_load_folder": 1,
-							"syntax": "Packages/C++/C.sublime-syntax"
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "cache/cache.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 978,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								977,
+								977
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 81,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 132.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "cache/cache.cc",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1151,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 71,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "cache/memory.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								299,
+								299
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 32,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "cache/memory.cc",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 246,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 17,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "cache/storage.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1366,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								99,
+								99
+							]
+						],
+						"settings":
+						{
+							"WordCount":
+							{
+								"changes": 0,
+								"count": 124,
+								"modified": false,
+								"selection": false,
+								"status": -1,
+								"syntax": "plain text"
+							},
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_thread_running": true,
+							"origin_encoding": "ASCII",
+							"side_bar_folders_auto_load_folder": 1,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 264.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
